@@ -1,108 +1,207 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lab 9</title>
+    <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+    <script>
+      window.TrackJS &&
+        TrackJS.install({
+          token: "3ee2eb32125549fa9121de209e247fbb",
+          // for more configuration options, see https://docs.trackjs.com
+        });
+      TrackJS.track("Testing TrackJS!");
+    </script>
+    <style>
+      button {
+        margin: 3px;
+      }
 
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lab 9</title>
+      button:hover {
+        cursor: pointer;
+      }
 
-  <style>
-    button {
-      margin: 3px;
-    }
+      #first-num,
+      #second-num {
+        width: 60px;
+      }
 
-    button:hover {
-      cursor: pointer;
-    }
+      output {
+        border: 1px solid gray;
+        display: block;
+        height: 18px;
+        margin-top: 5px;
+        padding: 5px;
+        width: 240px;
+      }
 
-    #first-num,
-    #second-num {
-      width: 60px;
-    }
+      main {
+        width: 800px;
+      }
 
-    output {
-      border: 1px solid gray;
-      display: block;
-      height: 18px;
-      margin-top: 5px;
-      padding: 5px;
-      width: 240px;
-    }
+      #error-btns {
+        column-gap: 5px;
+        display: flex;
+        flex-wrap: wrap;
+        margin-top: 30px;
+        row-gap: 5px;
+      }
 
-    main {
-      width: 800px;
-    }
+      #error-btns > * {
+        padding: 8px 2px;
+        width: 122px;
+      }
+    </style>
+  </head>
 
-    #error-btns {
-      column-gap: 5px;
-      display: flex;
-      flex-wrap: wrap;
-      margin-top: 30px;
-      row-gap: 5px;
-    }
+  <body>
+    <main>
+      <form>
+        <fieldset>
+          <legend>Error Calculator</legend>
+          <input name="first-num" id="first-num" />
+          <select name="operator" id="operator">
+            <option>+</option>
+            <option>-</option>
+            <option>*</option>
+            <option>/</option>
+          </select>
+          <input name="second-num" id="second-num" />
+          <button id="calculate">Calculate</button>
+          <br />
+          <output></output>
+        </fieldset>
+      </form>
 
-    #error-btns>* {
-      padding: 8px 2px;
-      width: 122px;
-    }
-  </style>
-</head>
+      <section id="error-btns">
+        <button id="log">Console Log</button>
+        <button id="error">Console Error</button>
+        <button id="count">Console Count</button>
+        <button id="warn">Console Warn</button>
+        <button id="assert">Console Assert</button>
+        <button id="clear">Console Clear</button>
+        <button id="dir">Console Dir</button>
+        <button id="dirxml">Console dirxml</button>
+        <button id="group">Console Group Start</button>
+        <button id="groupEnd">Console Group End</button>
+        <button id="table">Console Table</button>
+        <button id="startTimer">Start Timer</button>
+        <button id="endTimer">End Timer</button>
+        <button id="trace">Console Trace</button>
+        <button id="globalError">Trigger a Global Error</button>
+      </section>
+    </main>
 
-<body>
-  <main>
-    <form>
-      <fieldset>
-        <legend>Error Calculator</legend>
-        <input name="first-num" id="first-num" />
-        <select name="operator" id="operator">
-          <option>+</option>
-          <option>-</option>
-          <option>*</option>
-          <option>/</option>
-        </select>
-        <input name="second-num" id="second-num" />
-        <button id="calculate">Calculate</button>
-        <br />
-        <output></output>
-      </fieldset>
-    </form>
+    <script>
+      let form = document.querySelector("form");
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        let output = document.querySelector("output");
+        let firstNum = document.querySelector("#first-num").value;
+        let secondNum = document.querySelector("#second-num").value;
+        let operator = document.querySelector("#operator").value;
 
-    <section id="error-btns">
-      <button>Console Log</button>
-      <button>Console Error</button>
-      <button>Console Count</button>
-      <button>Console Warn</button>
-      <button>Console Assert</button>
-      <button>Console Clear</button>
-      <button>Console Dir</button>
-      <button>Console dirxml</button>
-      <button>Console Group Start</button>
-      <button>Console Group End</button>
-      <button>Console Table</button>
-      <button>Start Timer</button>
-      <button>End Timer</button>
-      <button>Console Trace</button>
-      <button>Trigger a Global Error</button>
-    </section>
-  </main>
+        try {
+          if (firstNum.trim() === "" || secondNum.trim() === "") {
+            throw new Error("Input fields can't be empty");
+          }
 
-  <script>
-    let form = document.querySelector('form');
-    form.addEventListener('submit', e => {
-      e.preventDefault();
-      let output = document.querySelector('output');
-      let firstNum = document.querySelector('#first-num').value;
-      let secondNum = document.querySelector('#second-num').value;
-      let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
-    });
+          const a = parseFloat(firstNum);
+          const b = parseFloat(secondNum);
 
-    let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
+          if (isNaN(a) || isNaN(b)) {
+            throw new Error("Inputs must be numbers.");
+          }
 
-    // Start your code here
-    // You may move this JS to another file if you wish
-  </script>
-</body>
+          const result = eval(`${a} ${operator} ${b}`);
+          output.innerHTML = result;
+          console.log("Calculation succeeded:", result);
+        } catch (err) {
+          console.error("Calculation failed:", err.message);
+          output.innerHTML = `Error: ${err.message}`;
+        } finally {
+          console.log("Calculation finished");
+        }
+      });
 
+      let errorBtns = Array.from(
+        document.querySelectorAll("#error-btns > button")
+      );
+      const dirxmlBtn = document.getElementById("dirxml");
+
+      window.onerror = function (errorMessage, url, lineNumber) {
+        console.log("Global error caught:");
+        console.log("Message:", errorMessage);
+        console.log("Source:", url);
+        console.log("Error at line:", lineNumber);
+        return true;
+      };
+
+      // Start your code here
+      // You may move this JS to another file if you wish
+      document
+        .getElementById("log")
+        .addEventListener("click", () => console.log("console log message."));
+      document
+        .getElementById("error")
+        .addEventListener("click", () =>
+          console.error("console error message.")
+        );
+      document
+        .getElementById("count")
+        .addEventListener("click", () =>
+          console.count("console count message")
+        );
+      document
+        .getElementById("warn")
+        .addEventListener("click", () =>
+          console.warn("console warning message")
+        );
+      document
+        .getElementById("assert")
+        .addEventListener("click", () =>
+          console.assert(false, "console assert message")
+        );
+      document
+        .getElementById("clear")
+        .addEventListener("click", () => console.clear());
+      document
+        .getElementById("dir")
+        .addEventListener("click", () => console.dir(document.body));
+      document
+        .getElementById("dirxml")
+        .addEventListener("click", () => console.dirxml(dirxmlBtn));
+
+      document.getElementById("group").addEventListener("click", () => {
+        console.group("console group messages");
+        console.log("group: message 1");
+        console.log("group: message 2");
+      });
+
+      document
+        .getElementById("groupEnd")
+        .addEventListener("click", () => console.groupEnd());
+      document.getElementById("table").addEventListener("click", () =>
+        console.table([
+          { name: "anonymous1", age: 100, job: "Designer" },
+          { name: "anonymous2", age: 200, job: "Developer" },
+        ])
+      );
+      document
+        .getElementById("startTimer")
+        .addEventListener("click", () => console.time("Timer"));
+      document
+        .getElementById("endTimer")
+        .addEventListener("click", () => console.timeEnd("Timer"));
+      document
+        .getElementById("trace")
+        .addEventListener("click", () => console.trace("console Trace"));
+
+      document.getElementById("globalError").addEventListener("click", () => {
+        undefinedFunctionCall();
+      });
+    </script>
+  </body>
 </html>
